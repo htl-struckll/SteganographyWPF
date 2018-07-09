@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Media.Imaging;
 using Steganography.Enums;
 using MessageBox = System.Windows.MessageBox;
 
@@ -30,13 +31,22 @@ namespace Steganography.Windows
 
         #region Events
 
+        /// <summary>
+        /// Decodes the file event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Decode_Click(object sender, RoutedEventArgs e)
         {
-
+            string path = FromFilePathDecodeInput.Text;
+            if (File.Exists(path))
+                ToDecodeOutput.Text = ExtractText(new Bitmap(Image.FromFile(path)));
+            else
+                Log("File path does not exist");
         }
 
         /// <summary>
-        /// Encodes the file
+        /// Encodes the file event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -49,7 +59,7 @@ namespace Steganography.Windows
                 _toPath = ToFilePathInput.Text;
                 _text = ToEncodeInput.Text;
 
-                if (_toPath.Equals(_fromPath))
+                if (!_toPath.Equals(_fromPath))
                 {
                     try
                     {
@@ -83,14 +93,13 @@ namespace Steganography.Windows
             {
                 InitialDirectory = "c:\\",
                 RestoreDirectory = true,
-                Filter= @"(*.BMP; *.JPG; *.GIF)| *.BMP; *.JPG; *.GIF | All files(*.*) | *.*"
-            };
+                Filter= @"Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png"
+        };
 
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 ToFilePathInput.Text = openFileDialog1.FileName;
                 _toPath = openFileDialog1.FileName;
-                UpdatePicture(_toPath);
             }
         }
 
@@ -105,7 +114,7 @@ namespace Steganography.Windows
             {
                 InitialDirectory = "c:\\",
                 RestoreDirectory = true,
-                Filter = @"(*.BMP; *.JPG; *.GIF)| *.BMP; *.JPG; *.GIF | All files(*.*) | *.*"
+                Filter = @"Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png"
             };
 
             if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -122,11 +131,55 @@ namespace Steganography.Windows
         /// <param name="e"></param>
         private void FromPath_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            UpdatePicture(FromFilePathInput.Text);
-            if (ToFilePathInput.Text.Equals(string.Empty))
-                ToFilePathInput.Text = FromFilePathInput.Text;
+            UpdatePictureEncode(FromFilePathInput.Text);
+            if (!FromFilePathInput.Text.Equals(string.Empty) && File.Exists(FromFilePathInput.Text))
+            {
+                string origPath = FromFilePathInput.Text;
+                string[] pathSplit = origPath.Split('\\');
+                string name = pathSplit[pathSplit.Length - 1], path = "";
+                string ext = name.Split('.')[1];
+                for (int idx = 0; idx < pathSplit.Length - 1; idx++)
+                    path += pathSplit[idx] + "\\";
+                
+                path += "newFile." + ext;
+                ToFilePathInput.Text = path;
+            }
+        }
+
+        /// <summary>
+        /// decode file selector event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DecodePathFileSelector_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog
+            {
+                InitialDirectory = "c:\\",
+                RestoreDirectory = true,
+                Filter = @"Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png"
+            };
+
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                FromFilePathDecodeInput.Text = openFileDialog1.FileName;
+                _fromPath = openFileDialog1.FileName;
+            }
+        }
+
+        /// <summary>
+        /// Text changed event on decode file path
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FromDecodePath_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (!FromFilePathDecodeInput.Text.Equals(string.Empty) && File.Exists(FromFilePathDecodeInput.Text))
+                UpdatePictureDecode(FromFilePathDecodeInput.Text);
         }
         #endregion
+
+        #region En/Decoding
 
         /// <summary>
         /// Extracts the text from an image
@@ -279,21 +332,30 @@ namespace Steganography.Windows
 
             return bmp;
         }
+        #endregion
+
+        #region GUI updates
 
         /// <summary>
         /// Updates the picture in the gui
         /// </summary>
         /// <param name="path">Path of the picture</param>
-        private void UpdatePicture(string path)
+        private void UpdatePictureEncode(string path)
         {
-            //todo
             if (File.Exists(path))
-            {
-                using (Bitmap bm = new Bitmap(Image.FromFile(path))) {
-                    
-                }
-            }
+                ImageOutput.Source = new BitmapImage(new Uri(path));
         }
+
+        /// <summary>
+        /// Updates the picture in the gui
+        /// </summary>
+        /// <param name="path">Path of the picture</param>
+        private void UpdatePictureDecode(string path)
+        {
+            if (File.Exists(path))
+                ImageOutputDecode.Source = new BitmapImage(new Uri(path));
+        }
+        #endregion
 
         /// <summary>
         /// Simple logging method
@@ -301,6 +363,5 @@ namespace Steganography.Windows
         /// <param name="msg">Message</param>
         /// <param name="caption">Caption</param>
         private void Log(string msg, string caption = "Info") => MessageBox.Show("[" + DateTime.Now + "] " + msg, caption);
-
     }
 }
