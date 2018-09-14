@@ -6,9 +6,10 @@ using System.Drawing;
 using System.Windows.Media.Imaging;
 using Steganography.Enums;
 using MessageBox = System.Windows.MessageBox;
+using DataFormats = System.Windows.DataFormats;
 
 /*
- * todo Change that the same file gets written into the to box (same path with diffrent name)
+ * decode = dekodieren
  */
 namespace Steganography.Windows
 {
@@ -32,11 +33,27 @@ namespace Steganography.Windows
         #region Events
 
         /// <summary>
+        /// Drag drop of picture event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DropArea_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if (files != null)
+                    UpdatePictureEncode(files[0]);
+            }
+        }
+
+        /// <summary>
         /// Decodes the file event
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Decode_Click(object sender, RoutedEventArgs e)
+        private void Encode_Click(object sender, RoutedEventArgs e)
         {
             string path = FromFilePathDecodeInput.Text;
             if (File.Exists(path))
@@ -50,7 +67,7 @@ namespace Steganography.Windows
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Encode_Click(object sender, RoutedEventArgs e)
+        private void Decode_Click(object sender, RoutedEventArgs e)
         {
             if (!FromFilePathInput.Text.Equals(string.Empty) || !ToFilePathInput.Text.Equals(string.Empty) ||
                 !ToEncodeInput.Text.Equals(string.Empty))
@@ -76,7 +93,7 @@ namespace Steganography.Windows
                     }
                 }
                 else
-                    Log("From and to file can not be the same!"); //todo rewrite better english
+                    Log("The paths can not be the same!");
             }
             else
                 Log("Input has been let empty");
@@ -343,7 +360,7 @@ namespace Steganography.Windows
         private void UpdatePictureEncode(string path)
         {
             if (File.Exists(path))
-                ImageOutput.Source = new BitmapImage(new Uri(path));
+                ImageOutput.Source = new BitmapImage(new Uri(path)); 
         }
 
         /// <summary>
@@ -363,5 +380,6 @@ namespace Steganography.Windows
         /// <param name="msg">Message</param>
         /// <param name="caption">Caption</param>
         private void Log(string msg, string caption = "Info") => MessageBox.Show("[" + DateTime.Now + "] " + msg, caption);
+
     }
 }
