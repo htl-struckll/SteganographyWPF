@@ -30,21 +30,43 @@ namespace Steganography.Windows
             InitializeComponent();
         }
 
-        #region Events
 
+        #region Events
         /// <summary>
-        /// Drag drop of picture event
+        /// Drag drop of picture event encode
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DropArea_Drop(object sender, System.Windows.DragEventArgs e)
+        private void DropAreaEncode_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if (files != null) { 
+                    UpdatePictureEncode(files[0]);
+                    FromFilePathInput.Text = files[0];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Drag drop of picture event decode
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DropAreaDecode_Drop(object sender, System.Windows.DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
                 if (files != null)
-                    UpdatePictureEncode(files[0]);
+                {
+                    UpdatePictureDecode(files[0]);
+                    FromFilePathDecodeInput.Text = files[0];
+                    ToFilePathInput.Text = GetNewPath(files[0]);
+                }
             }
         }
 
@@ -53,7 +75,7 @@ namespace Steganography.Windows
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Encode_Click(object sender, RoutedEventArgs e)
+        private void Decode_Click(object sender, RoutedEventArgs e)
         {
             string path = FromFilePathDecodeInput.Text;
             if (File.Exists(path))
@@ -67,7 +89,7 @@ namespace Steganography.Windows
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Decode_Click(object sender, RoutedEventArgs e)
+        private void Encode_Click(object sender, RoutedEventArgs e)
         {
             if (!FromFilePathInput.Text.Equals(string.Empty) || !ToFilePathInput.Text.Equals(string.Empty) ||
                 !ToEncodeInput.Text.Equals(string.Empty))
@@ -150,18 +172,9 @@ namespace Steganography.Windows
         {
             UpdatePictureEncode(FromFilePathInput.Text);
             if (!FromFilePathInput.Text.Equals(string.Empty) && File.Exists(FromFilePathInput.Text))
-            {
-                string origPath = FromFilePathInput.Text;
-                string[] pathSplit = origPath.Split('\\');
-                string name = pathSplit[pathSplit.Length - 1], path = "";
-                string ext = name.Split('.')[1];
-                for (int idx = 0; idx < pathSplit.Length - 1; idx++)
-                    path += pathSplit[idx] + "\\";
-                
-                path += "newFile." + ext;
-                ToFilePathInput.Text = path;
-            }
+                ToFilePathInput.Text = GetNewPath(FromFilePathInput.Text);
         }
+
 
         /// <summary>
         /// decode file selector event
@@ -374,12 +387,33 @@ namespace Steganography.Windows
         }
         #endregion
 
+        #region helpers
+        /// <summary>
+        /// Gets the new file path
+        /// </summary>
+        /// <param name="oldPath">Old path</param>
+        /// <returns>New path</returns>
+        private string GetNewPath(string oldPath)
+        {
+            string[] pathSplit = oldPath.Split('\\');
+            string name = pathSplit[pathSplit.Length - 1], path = "";
+            string ext = name.Split('.')[1];
+            for (int idx = 0; idx < pathSplit.Length - 1; idx++)
+                path += pathSplit[idx] + "\\";
+
+            path += "newFile." + ext;
+            return path;
+        }
+        #endregion
+
         /// <summary>
         /// Simple logging method
         /// </summary>
         /// <param name="msg">Message</param>
         /// <param name="caption">Caption</param>
-        private void Log(string msg, string caption = "Info") => MessageBox.Show("[" + DateTime.Now + "] " + msg, caption);
+        /// <param name="btn">Nutton</param>
+        /// <param name="image">Image</param>
+        private void Log(string msg, string caption = "Info", MessageBoxButton btn = MessageBoxButton.OK, MessageBoxImage image = MessageBoxImage.Information) => MessageBox.Show("[" + DateTime.Now + "] " + msg, caption,btn,image);
 
     }
 }

@@ -5,34 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Steganography"
         mc:Ignorable="d"
-        ResizeMode="CanMinimize"
         Title="Steganograph" Height="486" Width="800">
-    <Grid Height="420" Margin="0,0,-0.4,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="794">
-        <TabControl HorizontalAlignment="Left" Height="456" Margin="0,-1,0,-35" VerticalAlignment="Top" Width="794">
-            <TabItem Header="Decoder">
+    <Grid Margin="0,0,-0.4,36.8">
+        <TabControl Margin="0,-1,0,-35">
+            <TabItem Header="Encoder">
                 <Grid Background="#FFE5E5E5">
-                    <Rectangle Margin="375,39,0,0"  Fill="LightGray" AllowDrop="True" Drop="DropArea_Drop" Stroke="Black" Height="370" VerticalAlignment="Top" HorizontalAlignment="Left" Width="398"></Rectangle>
-                    <Image x:Name="ImageOutput" IsHitTestVisible="False" Margin="381,48,0,0" Height="344" VerticalAlignment="Top" HorizontalAlignment="Left" Width="385"></Image>
+                    <Rectangle Margin="375,39,15,19"  Fill="LightGray" AllowDrop="True" Drop="DropAreaEncode_Drop" Stroke="Black"/>
+                    <Image x:Name="ImageOutput" IsHitTestVisible="False" Margin="381,48,22,36"/>
 
 
                     <TextBlock FontSize="20" Margin="20,42,0,0" HorizontalAlignment="Left" Width="88" Height="40" VerticalAlignment="Top">Path:</TextBlock>
                     <TextBox x:Name="FromFilePathInput" HorizontalScrollBarVisibility="Visible" TextChanged="FromPath_TextChanged" FontSize="22" Margin="80,38,0,0" HorizontalAlignment="Left" Width="196" Height="55" VerticalAlignment="Top"></TextBox>
-                    <Button Margin="297,39,434,335" Click="FromFileSelecter_Click">placeholder</Button>
+                    <Button Margin="297,39,0,0" Click="FromFileSelecter_Click" HorizontalAlignment="Left" Width="57" Height="54" VerticalAlignment="Top">placeholder</Button>
 
                     <TextBlock FontSize="20" Margin="20,108,0,0" HorizontalAlignment="Left" Width="88" Height="40" VerticalAlignment="Top">To:</TextBlock>
                     <TextBox x:Name="ToFilePathInput" HorizontalScrollBarVisibility="Visible" FontSize="22" Margin="80,108,0,0" Height="56" VerticalAlignment="Top" HorizontalAlignment="Left" Width="196"></TextBox>
-                    <Button Margin="297,108,434,264" Click="ToFileSelecter_Click">placeholder</Button>
+                    <Button Margin="297,108,0,0" Click="ToFileSelecter_Click" HorizontalAlignment="Left" Width="57" Height="56" VerticalAlignment="Top">placeholder</Button>
 
                     <TextBlock FontSize="20" Margin="20,164,0,0" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" Width="88" RenderTransformOrigin="0.466,0.64">Text:</TextBlock>
                     <TextBox x:Name="ToEncodeInput" FontSize="20" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="20,195,0,0" Height="157" VerticalAlignment="Top" HorizontalAlignment="Left" Width="340"></TextBox>
 
-                    <Button FontSize="15" Margin="255,371,434,19" Click="Decode_Click">Decode</Button>
+                    <Button FontSize="15" Margin="255,371,0,0" Click="Encode_Click" Height="38" VerticalAlignment="Top" HorizontalAlignment="Left" Width="99">Encode</Button>
                 </Grid>
             </TabItem>
-            <TabItem Header="Encoder">
+            <TabItem Header="Decoder">
                 <Grid Background="#FFE5E5E5">
-                    <Rectangle Margin="375,39,0,0" Fill="LightGray" Stroke="Black" Height="370" VerticalAlignment="Top" HorizontalAlignment="Left" Width="398"></Rectangle>
-                    <Image x:Name="ImageOutputDecode" Margin="381,48,0,0" Height="344" VerticalAlignment="Top" HorizontalAlignment="Left" Width="385"></Image>
+                    <Rectangle Margin="375,39,0,0" AllowDrop="True" Drop="DropAreaDecode_Drop" Fill="LightGray" Stroke="Black" Height="370" VerticalAlignment="Top" HorizontalAlignment="Left" Width="398"></Rectangle>
+                    <Image x:Name="ImageOutputDecode" IsHitTestVisible="False" Margin="381,48,0,0" Height="344" VerticalAlignment="Top" HorizontalAlignment="Left" Width="385"></Image>
 
                     <TextBlock FontSize="20" Margin="20,42,0,0" HorizontalAlignment="Left" Width="88" Height="40" VerticalAlignment="Top">Path:</TextBlock>
                     <TextBox x:Name="FromFilePathDecodeInput" HorizontalScrollBarVisibility="Visible" TextChanged="FromDecodePath_TextChanged" FontSize="22" Margin="80,38,0,0" HorizontalAlignment="Left" Width="196" Height="55" VerticalAlignment="Top"></TextBox>
@@ -45,7 +44,7 @@
                     <TextBlock FontSize="20" Margin="20,98,0,0" Height="40" VerticalAlignment="Top" HorizontalAlignment="Left" Width="88" RenderTransformOrigin="0.466,0.64">Text:</TextBlock>
                     <TextBox x:Name="ToDecodeOutput" FontSize="20" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" Margin="20,128,0,0" Height="224" VerticalAlignment="Top" HorizontalAlignment="Left" Width="340"></TextBox>
 
-                    <Button FontSize="15" Margin="255,371,434,19" Click="Encode_Click">Encode</Button>
+                    <Button FontSize="15" Margin="255,371,434,19" Click="Decode_Click">Decode</Button>
                 </Grid>
             </TabItem>
         </TabControl>
